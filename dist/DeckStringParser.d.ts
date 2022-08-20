@@ -1,4 +1,4 @@
-import BinaryValue from "./BinaryValue";
+import BinaryValue from './BinaryValue';
 /**
  * Parse a Warno deck string
  *

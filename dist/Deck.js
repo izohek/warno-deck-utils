@@ -4,7 +4,7 @@ exports.UnitCardCategories = exports.Deck = void 0;
 /// A Warno deck
 class Deck {
     constructor() {
-        this.country = "";
+        this.country = '';
         this.numberCards = 0;
         this.cards = [];
     }
@@ -14,14 +14,19 @@ class Deck {
      * @returns OrderedUnitCardSet
      */
     categorized() {
-        var set = {};
-        var categories = [];
-        Object.keys(UnitCardCategories).forEach(element => {
-            set[element] = [];
-            categories.push(element);
-        });
+        const set = {
+            log: [],
+            inf: [],
+            art: [],
+            tnk: [],
+            aa: [],
+            rec: [],
+            hel: [],
+            air: []
+        };
+        const categories = [];
         this.cards.forEach(element => {
-            if (element.category && categories.includes(element.category)) {
+            if (element.category != null && categories.includes(element.category)) {
                 set[element.category].push(element);
             }
         });
@@ -30,14 +35,14 @@ class Deck {
 }
 exports.Deck = Deck;
 const UnitCardCategories = {
-    'log': 'Logistics',
-    'inf': 'Infantry',
-    'art': 'Artillery',
-    'tank': 'Tank',
-    'aa': 'Anti-air',
-    'rec': 'Recon',
-    'hel': 'Helicopter',
-    'air': 'Air'
+    log: 'Logistics',
+    inf: 'Infantry',
+    art: 'Artillery',
+    tank: 'Tank',
+    aa: 'Anti-air',
+    rec: 'Recon',
+    hel: 'Helicopter',
+    air: 'Air'
 };
 exports.UnitCardCategories = UnitCardCategories;
 exports.default = Deck;

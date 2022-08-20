@@ -27,16 +27,16 @@ exports.decodeDeckString = decodeDeckString;
  */
 function deckFromParser(results) {
     var _a, _b;
-    var deck = new Deck_1.default();
-    if (results.error) {
+    const deck = new Deck_1.default();
+    if (results.error != null) {
         return deck;
     }
-    const divisionValue = parseInt((_a = results.steps[2].data) !== null && _a !== void 0 ? _a : "", 2);
+    const divisionValue = parseInt((_a = results.steps[2].data) !== null && _a !== void 0 ? _a : '', 2);
     deck.division = warno_db_1.AllDivisions.filter(function (item) {
         return item.id === divisionValue;
     })[0];
     const numberOfCardsField = results.steps[3];
-    deck.numberCards = parseInt((_b = numberOfCardsField.data) !== null && _b !== void 0 ? _b : "", 2);
+    deck.numberCards = parseInt((_b = numberOfCardsField.data) !== null && _b !== void 0 ? _b : '', 2);
     results.units.forEach(cardResult => {
         deck.cards.push(cardFromUnitField(cardResult));
     });
@@ -50,13 +50,11 @@ exports.deckFromParser = deckFromParser;
  * @returns
  */
 function cardFromUnitField(unitField) {
-    var newCard = (0, warno_db_1.findUnitCard)(unitField.id);
-    if (newCard === null) {
-        newCard = new warno_db_1.UnitCard();
-    }
+    var _a;
+    const newCard = (_a = (0, warno_db_1.findUnitCard)(unitField.id)) !== null && _a !== void 0 ? _a : new warno_db_1.UnitCard();
     newCard.code = unitField.id;
     newCard.veterancy = unitField.xp;
-    if (unitField.transport) {
+    if (!isNaN(unitField.transport)) {
         const transportCard = (0, warno_db_1.findUnitCard)(unitField.transport);
         newCard.transport = transportCard !== null && transportCard !== void 0 ? transportCard : new warno_db_1.UnitCard(`transport (${unitField.transport})`, unitField.transport, unitField.xp);
     }

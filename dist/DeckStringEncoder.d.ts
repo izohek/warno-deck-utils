@@ -1,4 +1,4 @@
-import Deck from "./Deck";
+import Deck from './Deck';
 /**
  * Build a deck string from a Deck
  *

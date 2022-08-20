@@ -16,25 +16,25 @@ const Constants_1 = require("./Constants");
  */
 function parseDeckString(deckString) {
     var _a;
-    var parserResult = new DeckParserResults();
+    const parserResult = new DeckParserResults();
     parserResult.deckString = deckString;
     // Check we have data
-    if (!deckString) {
-        parserResult.error = new Error("Empty deck string");
+    if (deckString !== '') {
+        parserResult.error = new Error('Empty deck string');
         return parserResult;
     }
     // Decode base64
-    var parsedOutput;
+    let parsedOutput;
     try {
         parsedOutput = atob(deckString);
     }
     catch (err) {
-        parserResult.error = (_a = err) !== null && _a !== void 0 ? _a : new Error("Uknown error");
+        parserResult.error = (_a = err) !== null && _a !== void 0 ? _a : new Error('Uknown error');
         return parserResult;
     }
     const bitstream = stringForByteBuffer(parsedOutput);
     parserResult.decodedString = bitstream;
-    var position = 0;
+    let position = 0;
     // Eugen Headers - unknown purpose
     const header1 = parseField(bitstream, position);
     parserResult.steps.push(header1[0]);
@@ -59,18 +59,18 @@ function parseDeckString(deckString) {
     parserResult.steps.push(unitIdSize[0]);
     position = unitIdSize[1];
     // Loop for each unit
-    // Ignores leftovers for now since if parsed it creates an extra 
+    // Ignores leftovers for now since if parsed it creates an extra
     //    incorrect card which shares some IDs with bradleys and such.
     const unitDefTotalLength = xpSize[0].length + unitIdSize[0].length;
     while (position < bitstream.length && position + unitDefTotalLength < bitstream.length) {
         const unit = parseUnitField(bitstream, position, {
             xp: xpSize[0].length,
-            unit: unitIdSize[0].length,
+            unit: unitIdSize[0].length
         });
         parserResult.units.push(unit);
         position = unit.position.end;
     }
-    // TODO: 
+    // TODO:
     // Left over unused bits.  Parsing is accurate without them, but might be an issue when encoding.
     // All parsed decks end up with an extra card that always has only 1 bit set to on, but a variable position and surrounding 0s.
     // Parses out to some 2^x like 4, 8, 16, 32, 64, 128.
@@ -127,8 +127,8 @@ function parseFixedWidth(buffer, position, length = Constants_1.DECK_FIELD_LENGT
  * @returns
  */
 function parseUnitField(buffer, position, lengths) {
-    var currentPosition = position;
-    var nextPosition = currentPosition;
+    let currentPosition = position;
+    let nextPosition = currentPosition;
     nextPosition += lengths.xp;
     const xp = buffer.slice(currentPosition, nextPosition);
     currentPosition = nextPosition;
@@ -140,7 +140,7 @@ function parseUnitField(buffer, position, lengths) {
     currentPosition = nextPosition;
     return new DeckFieldUnit(xp, unit, transport, {
         start: position,
-        end: nextPosition,
+        end: nextPosition
     });
 }
 /**
@@ -151,9 +151,9 @@ function parseUnitField(buffer, position, lengths) {
  * @returns
  */
 function stringForByteBuffer(buffer, padding = 8) {
-    var len = buffer.length;
-    var str = "";
-    for (var i = 0; i < len; i++) {
+    const len = buffer.length;
+    let str = '';
+    for (let i = 0; i < len; i++) {
         str += buffer.charCodeAt(i).toString(2).padStart(padding, '0');
     }
     return str;
@@ -163,8 +163,8 @@ function stringForByteBuffer(buffer, padding = 8) {
  */
 class DeckParserResults {
     constructor() {
-        this.deckString = "";
-        this.decodedString = "";
+        this.deckString = '';
+        this.decodedString = '';
         this.steps = [];
         this.units = [];
         this.error = null;

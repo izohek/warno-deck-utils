@@ -1,5 +1,5 @@
-import Deck from "./Deck";
-import { DeckParserResults } from "./DeckStringParser";
+import Deck from './Deck';
+import { DeckParserResults } from './DeckStringParser';
 /**
  * Decode a Warno deckstring into a Deck
  *

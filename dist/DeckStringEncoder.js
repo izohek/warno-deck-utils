@@ -9,13 +9,13 @@ const Constants_1 = require("./Constants");
  * @returns
  */
 function encodeDeck(deck) {
-    if (!deck.division) {
-        return "";
+    if (deck.division == null) {
+        return '';
     }
-    var output = "";
+    let output = '';
     // eugene static header
-    output = encodeLengthLeadingValue(2)
-        + encodeLengthLeadingValue(0);
+    output = encodeLengthLeadingValue(2) +
+        encodeLengthLeadingValue(0);
     // division
     output += encodeLengthLeadingValue(deck.division.id);
     // number of cards in deckw
@@ -37,9 +37,9 @@ function encodeDeck(deck) {
     // add units
     deck.cards.forEach(function (card) {
         var _a, _b;
-        output += encodeValue(card.veterancy, xpBinaryLength)
-            + encodeValue(card.code, idBinaryLengthsMax)
-            + encodeValue((_b = (_a = card.transport) === null || _a === void 0 ? void 0 : _a.code) !== null && _b !== void 0 ? _b : 0, idBinaryLengthsMax);
+        output += encodeValue(card.veterancy, xpBinaryLength) +
+            encodeValue(card.code, idBinaryLengthsMax) +
+            encodeValue((_b = (_a = card.transport) === null || _a === void 0 ? void 0 : _a.code) !== null && _b !== void 0 ? _b : 0, idBinaryLengthsMax);
     });
     // End
     output += encodeValue(1);
@@ -56,8 +56,8 @@ exports.encodeDeck = encodeDeck;
  * @returns
  */
 function encodeValue(value, length = Constants_1.DECK_FIELD_LENGTH_BITS) {
-    if (typeof value === "number") {
-        return value.toString(2).padStart(length, "0");
+    if (typeof value === 'number') {
+        return value.toString(2).padStart(length, '0');
     }
     else {
         return value.padStart(length, '0');
@@ -73,8 +73,7 @@ function encodeValue(value, length = Constants_1.DECK_FIELD_LENGTH_BITS) {
  */
 function encodeLengthLeadingValue(value) {
     const binaryStr = value.toString(2);
-    return encodeValue(binaryStr.length)
-        + binaryStr;
+    return encodeValue(binaryStr.length) + binaryStr;
 }
 /**
  * Convert a binary string representation into a string representing
@@ -85,9 +84,9 @@ function encodeLengthLeadingValue(value) {
  * @returns
  */
 function bitStringToText(str) {
-    var output = "";
-    for (var i = 0; i < str.length; i += 8) {
-        var segment = str.substring(i, i + 8);
+    let output = '';
+    for (let i = 0; i < str.length; i += 8) {
+        let segment = str.substring(i, i + 8);
         if (segment.length < 8) {
             segment = segment.padEnd(8, '0');
         }

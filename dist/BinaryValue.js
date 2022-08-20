@@ -6,10 +6,10 @@ const Constants_1 = require("./Constants");
  */
 class BinaryValue {
     constructor(value) {
-        if (typeof value === "string") {
+        if (typeof value === 'string') {
             this.value = parseInt(value, 2);
         }
-        else if (typeof value === "number") {
+        else if (typeof value === 'number') {
             this.value = value;
         }
     }
@@ -21,7 +21,7 @@ class BinaryValue {
      */
     string(pad = Constants_1.DECK_FIELD_LENGTH_BITS) {
         var _a, _b;
-        return (_b = (_a = this.value) === null || _a === void 0 ? void 0 : _a.toString(2).padStart(pad, '0')) !== null && _b !== void 0 ? _b : "";
+        return (_b = (_a = this.value) === null || _a === void 0 ? void 0 : _a.toString(2).padStart(pad, '0')) !== null && _b !== void 0 ? _b : '';
     }
     /**
      * Get the integer represenation of the data.
@@ -29,7 +29,7 @@ class BinaryValue {
      * @returns
      */
     integerString() {
-        if (this.value) {
+        if (this.value === null) {
             return parseInt(this.string(), 2);
         }
         else {

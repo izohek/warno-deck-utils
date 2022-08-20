@@ -1,4 +1,4 @@
-import { Division, UnitCard } from "@izohek/warno-db";
+import { Division, UnitCard } from '@izohek/warno-db';
 declare class Deck {
     division?: Division;
     country: string;
