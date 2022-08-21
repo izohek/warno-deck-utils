@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "lint": "npx eslint src/*",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   },
   "types": "dist/index.d.ts",
   "files": [
-    "/dist"
+    "/dist/src"
   ],
   "keywords": [
     "Warno"
@@ -26,12 +26,15 @@
   },
   "homepage": "https://github.com/izohek/warno-deck-utils#readme",
   "devDependencies": {
+    "@types/jest": "^28.1.7",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "eslint": "^8.22.0",
     "eslint-config-standard-with-typescript": "^22.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.2.4",
     "eslint-plugin-promise": "^6.0.0",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.8",
     "typescript": "^4.7.4"
   },
   "dependencies": {

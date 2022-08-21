@@ -14,7 +14,7 @@ function parseDeckString (deckString: string): DeckParserResults {
     parserResult.deckString = deckString
 
     // Check we have data
-    if (deckString !== '') {
+    if (deckString === '') {
         parserResult.error = new Error('Empty deck string')
         return parserResult
     }

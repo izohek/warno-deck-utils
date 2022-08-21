@@ -11,6 +11,8 @@ import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
 export function decodeDeckString (deckString: string): Deck {
     // Parse and decode
     const parserResults = parseDeckString(deckString)
+    
+    // TODO: Error check
 
     return deckFromParser(parserResults)
 }
@@ -58,7 +60,7 @@ function cardFromUnitField (unitField: DeckFieldUnit): UnitCard {
     newCard.code = unitField.id
     newCard.veterancy = unitField.xp
 
-    if (!isNaN(unitField.transport)) {
+    if (unitField.transport != null && unitField.transport > 0) {
         const transportCard = findUnitCard(unitField.transport)
         newCard.transport = transportCard ?? new UnitCard(`transport (${unitField.transport})`, unitField.transport, unitField.xp)
     }
