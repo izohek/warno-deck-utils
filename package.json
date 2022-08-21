@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "lint": "npx eslint src/*",
+    "lint": "npx eslint src/* tests/*",
     "test": "jest"
   },
   "repository": {

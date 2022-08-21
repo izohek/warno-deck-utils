@@ -16,7 +16,10 @@ const warno_db_1 = require("@izohek/warno-db");
 function decodeDeckString(deckString) {
     // Parse and decode
     const parserResults = (0, DeckStringParser_1.default)(deckString);
-    // TODO: Error check
+    // Error check
+    if (parserResults.error !== null) {
+        throw parserResults.error;
+    }
     return deckFromParser(parserResults);
 }
 exports.decodeDeckString = decodeDeckString;

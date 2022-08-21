@@ -11,8 +11,11 @@ import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
 export function decodeDeckString (deckString: string): Deck {
     // Parse and decode
     const parserResults = parseDeckString(deckString)
-    
-    // TODO: Error check
+
+    // Error check
+    if (parserResults.error !== null) {
+        throw parserResults.error
+    }
 
     return deckFromParser(parserResults)
 }
