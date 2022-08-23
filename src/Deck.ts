@@ -1,4 +1,4 @@
-import { Division, UnitCard } from '@izohek/warno-db'
+import { Division, UnitCard, findUnitCard } from '@izohek/warno-db'
 
 /// A Warno deck
 class Deck {
@@ -33,6 +33,32 @@ class Deck {
         })
 
         return set
+    }
+
+    /**
+     * Add unit card to deck by id
+     *
+     * @param id
+     * @returns UnitCard or null if id not found
+     */
+    public addUnitWithId (id: string | number, veterancy: number, transport: string | number | null = null): UnitCard | null {
+        const unitCard = findUnitCard(id)
+
+        if (unitCard == null) {
+            return null
+        }
+
+        unitCard.veterancy = Math.min(Math.max(veterancy, 0), 3)
+
+        if (transport != null) {
+            unitCard.transport = findUnitCard(transport) ?? undefined
+        }
+
+        this.cards.push(unitCard)
+
+        this.numberCards = this.cards.length
+
+        return unitCard
     }
 }
 
