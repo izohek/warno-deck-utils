@@ -10,6 +10,13 @@ declare class Deck {
      * @returns OrderedUnitCardSet
      */
     categorized(): OrderedUnitCardSet;
+    /**
+     * Add unit card to deck by id
+     *
+     * @param id
+     * @returns UnitCard or null if id not found
+     */
+    addUnitWithId(id: string | number, veterancy: number, transport?: string | number | null): UnitCard | null;
 }
 interface OrderedUnitCardSet {
     log: UnitCard[];
