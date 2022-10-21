@@ -3,22 +3,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.decks = void 0;
 exports.decks = [
     {
-        deckString: 'FBFuGJWzQABA',
+        // Old 10-bit unit encoded value: FBFuGJWzQABA
+        deckString: 'FBFuGJeZoAAQ',
         division: '35th',
         units: [410],
         veterancy: [3]
     }, {
-        deckString: 'FBF4OCVRkAFGQASzvolcAAQ=',
+        // Old 10-bit unit encoded value: FBF4OCVRkAFGQASzvolcAAQ=
+        deckString: 'FBF4OCXIyABIyABFnPoiuAAE',
         division: 'TKS',
         units: [562, 562, [359, 500], 174],
         veterancy: [2, 2, 2, 1]
     }, {
-        deckString: 'FBFiOiVMyAEzIATMgBM8AEzwABA=',
+        // Old 10-bit unit encoded value: FBFiOiVMyAEzIATMgBM8AEzwABA=
+        deckString: 'FBFiOiXGZABGZABGZABGeABGeAAE',
         division: '39th',
         units: [409, 409, 409, 414, 414],
         veterancy: [2, 2, 2, 2, 2]
     }, {
-        deckString: 'FBFmaMSuHAAUVABRUAGNAA4FfeXMz5cjRlzM+V9+NZX41jfjWN+G9n3lefh02NXTY147ACj0AKPQAs2ACj8AOCH4lpfioMAJCgAozACNMALFQAqCABogAGhgAYXABTwAFGwAaSAAIA==',
+        // Old 10-bit unit encoded value: FBFmaMSuHAAUVABRUAGNAA4FfeXMz5cjRlzM+V9+NZX41jfjWN+G9n3lefh02NXTY147ACj0AKPQAs2ACj8AOCH4lpfioMAJCgAozACNMALFQAqCABogAGhgAYXABTwAFGwAaSAAIA==
+        deckString: 'FBFmaMS9DgAEioAEioAFGgANAp94uYz4uQ0YuYz4r5+Msp+MsZ+MsZ+Fex94rx+FpqNVpqNdHYAJHoAJHoAJmwAJH4ANBB+ItJ+JQYAIhQAJGYAIaYAJioAJQQAFRAAFQwAFC4AEngAEjYAFSQAAgA==',
         division: '4th',
         units: [
             540, 277, 277, 564, [517, 503], [371, 207], [370, 209], [371, 207], [351, 504], [357, 504], [355, 504], [355, 504],
