@@ -17,6 +17,15 @@ declare class Deck {
      * @returns UnitCard or null if id not found
      */
     addUnitWithId(id: string | number, veterancy: number, transport?: string | number | null): UnitCard | null;
+    /**
+     * Add unit card with optional transport to deck using the descriptor.
+     *
+     * @param descriptor
+     * @param veterancy
+     * @param transport
+     * @returns
+     */
+    addUnitWithDescriptor(descriptor: string, veterancy: number, transport?: string): UnitCard;
 }
 interface OrderedUnitCardSet {
     log: UnitCard[];

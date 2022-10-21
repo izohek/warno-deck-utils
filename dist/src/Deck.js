@@ -53,6 +53,31 @@ class Deck {
         this.numberCards = this.cards.length;
         return unitCard;
     }
+    /**
+     * Add unit card with optional transport to deck using the descriptor.
+     *
+     * @param descriptor
+     * @param veterancy
+     * @param transport
+     * @returns
+     */
+    addUnitWithDescriptor(descriptor, veterancy, transport) {
+        const unitCard = (0, warno_db_1.findUnitCardByDescriptor)(descriptor);
+        if (unitCard == null) {
+            throw new Error('Unknown unit descriptor');
+        }
+        if (transport != null) {
+            const transportCard = (0, warno_db_1.findUnitCardByDescriptor)(transport);
+            if (transportCard == null) {
+                throw new Error('Unknown transport descriptor');
+            }
+            unitCard.transport = transportCard;
+        }
+        unitCard.veterancy = Math.min(Math.max(veterancy, 0), 3);
+        this.cards.push(unitCard);
+        this.numberCards = this.cards.length;
+        return unitCard;
+    }
 }
 exports.Deck = Deck;
 const UnitCardCategories = {

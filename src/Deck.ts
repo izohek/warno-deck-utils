@@ -1,4 +1,4 @@
-import { Division, UnitCard, findUnitCard } from '@izohek/warno-db'
+import { Division, UnitCard, findUnitCard, findUnitCardByDescriptor } from '@izohek/warno-db'
 
 /// A Warno deck
 class Deck {
@@ -56,6 +56,36 @@ class Deck {
 
         this.cards.push(unitCard)
 
+        this.numberCards = this.cards.length
+
+        return unitCard
+    }
+
+    /**
+     * Add unit card with optional transport to deck using the descriptor.
+     *
+     * @param descriptor
+     * @param veterancy
+     * @param transport
+     * @returns
+     */
+    public addUnitWithDescriptor (descriptor: string, veterancy: number, transport?: string): UnitCard {
+        const unitCard = findUnitCardByDescriptor(descriptor)
+        if (unitCard == null) {
+            throw new Error('Unknown unit descriptor')
+        }
+
+        if (transport != null) {
+            const transportCard = findUnitCardByDescriptor(transport)
+            if (transportCard == null) {
+                throw new Error('Unknown transport descriptor')
+            }
+
+            unitCard.transport = transportCard
+        }
+
+        unitCard.veterancy = Math.min(Math.max(veterancy, 0), 3)
+        this.cards.push(unitCard)
         this.numberCards = this.cards.length
 
         return unitCard
