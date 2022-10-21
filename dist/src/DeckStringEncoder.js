@@ -32,7 +32,7 @@ function encodeDeck(deck) {
     const idBinaryLengths = deck.cards.map(function (card) {
         return card.code.toString(2).length;
     });
-    const idBinaryLengthsMax = Math.max(...idBinaryLengths, 10);
+    const idBinaryLengthsMax = Math.max(...idBinaryLengths, 11);
     output += encodeValue(idBinaryLengthsMax.toString(2));
     // add units
     deck.cards.forEach(function (card) {
