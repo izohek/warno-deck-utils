@@ -42,7 +42,7 @@ export function deckFromParser (results: DeckParserResults): Deck {
     const numberOfCardsField = results.steps[3]
     deck.numberCards = parseInt(numberOfCardsField.data as string ?? '', 2)
 
-    results.units.forEach(cardResult => {
+    results.units.slice(0, deck.numberCards).forEach(cardResult => {
         deck.cards.push(
             cardFromUnitField(cardResult)
         )

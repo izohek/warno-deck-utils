@@ -41,7 +41,7 @@ function deckFromParser(results) {
     })[0];
     const numberOfCardsField = results.steps[3];
     deck.numberCards = parseInt((_b = numberOfCardsField.data) !== null && _b !== void 0 ? _b : '', 2);
-    results.units.forEach(cardResult => {
+    results.units.slice(0, deck.numberCards).forEach(cardResult => {
         deck.cards.push(cardFromUnitField(cardResult));
     });
     return deck;
