@@ -74,7 +74,8 @@ function parseDeckString (deckString: string): DeckParserResults {
     // Ignores leftovers for now since if parsed it creates an extra
     //    incorrect card which shares some IDs with bradleys and such.
     const unitDefTotalLength = xpSize[0].length + unitIdSize[0].length
-    while (position < bitstream.length && position + unitDefTotalLength < bitstream.length) {
+    const expectedNumCards = numCards[0].dataBinary.value ?? 0
+    while (position < bitstream.length && position + unitDefTotalLength < bitstream.length && parserResult.units.length < expectedNumCards) {
         const unit = parseUnitField(bitstream, position, {
             xp: xpSize[0].length,
             unit: unitIdSize[0].length
@@ -84,11 +85,58 @@ function parseDeckString (deckString: string): DeckParserResults {
     }
 
     // TODO:
-    // Left over unused bits.  Parsing is accurate without them, but might be an issue when encoding.
-    // All parsed decks end up with an extra card that always has only 1 bit set to on, but a variable position and surrounding 0s.
-    // Parses out to some 2^x like 4, 8, 16, 32, 64, 128.
-    // Might be some sort of padding used in the encoding.
-    // Seems to end in : 000010 with { ending padding of 0s }
+    // This leftover data represents combat groups
+    /**
+     * Combat Groups Encoding (use the same kind of encoding, with data size and value)
+        1) Number of Companies
+        2) If there is at least one
+        2)a) Max number of Platoon
+        2)b) Biggest pack index referenced in a Platoon
+        2)c) Biggest number of a pack in a Platoon
+        3) Loop through each Company
+        3)a) Number of Platoon in this Company
+        3)b) Loop through each Platoon
+        3)b)a) Number of Pack data in this Platoon
+        3)b)b) Loop through each Pack Data
+        3)b)c)a) Pack index, for exmple if 3 is encoded, it refers to the 3rd pack encoded in your section 7
+        3)b)c)b) Pack number
+     */
+
+    // == Combat groups ==
+
+    // number of encoded companies
+    const numCombatGroups = parseField(bitstream, position)
+    parserResult.combatGroups.push(numCombatGroups[0])
+    position = numCombatGroups[1]
+
+    const numCombatGroupsInt = numCombatGroups[0].dataBinary.value ?? 0
+    if (numCombatGroupsInt < 1) {
+        // If no combat groups, we're done
+        return parserResult
+    }
+    
+    // a) Max number of Platoon
+    const maxPlatoonNum = parseFixedWidth(bitstream, position)
+    parserResult.combatGroups.push(maxPlatoonNum[0])
+    position = maxPlatoonNum[1]
+    
+    // 2)b) Biggest pack index referenced in a Platoon
+    const maxPlatoonPackIndex = parseFixedWidth(bitstream, position)
+    parserResult.combatGroups.push(maxPlatoonPackIndex[0])
+    position = maxPlatoonPackIndex[1]
+
+    // 2)c) Biggest number of a pack in a Platoon
+    const maxPlatoonPackId = parseField(bitstream, position)
+    parserResult.combatGroups.push(maxPlatoonPackId[0])
+    position = maxPlatoonPackId[1]
+    
+    console.log("1)# Companies: ",numCombatGroups, numCombatGroups[0].dataBinary.value);
+    console.log("2a)Max num of platoon: ", maxPlatoonNum, maxPlatoonNum[0].length);
+    console.log("2b)Biggest pack index: ", maxPlatoonPackIndex, maxPlatoonPackIndex[0].length);
+    console.log("2)c1) Biggest number of a pack in a Platoon: ", maxPlatoonPackId, maxPlatoonPackId[0].length);
+
+    // TODO:
+    // 3) Loop through each Company
 
     return parserResult
 }
@@ -189,6 +237,7 @@ class DeckParserResults {
     decodedString: string = ''
     steps: DeckField[] = []
     units: DeckFieldUnit[] = []
+    combatGroups: DeckField[] = []
     error: Error | null = null
     leftovers: DeckField[] = []
 }
