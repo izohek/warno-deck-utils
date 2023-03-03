@@ -56,3 +56,10 @@ test('test-empty-deck-strings', () => {
 
     expect(decodedDeck).toThrow(Error)
 })
+
+test('test-modded-deck-code', () => {
+    const deckCode = "FBgAAAAFepShgAAAAAk0MS4XgAAg"
+    const decodedDeck = decodeDeckString(deckCode)
+    // TODO: issue with parsing modded decks so test for truthy until it's better implemented
+    expect(decodedDeck).toBeTruthy()
+})

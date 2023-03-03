@@ -38,6 +38,7 @@ function parseDeckString (deckString: string): DeckParserResults {
     parserResult.steps.push(header1[0])
     position = header1[1]
 
+    // Modded game flag
     const header2 = parseField(bitstream, position)
     parserResult.steps.push(header2[0])
     position = header2[1]

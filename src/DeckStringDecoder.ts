@@ -33,6 +33,10 @@ export function deckFromParser (results: DeckParserResults): Deck {
         return deck
     }
 
+    // Indicates if deck code was generated from a modded game
+    const moddedFlag = parseInt(results.steps[1].data as string ?? '', 2)
+    deck.modded = moddedFlag === 1
+
     const divisionValue = parseInt(results.steps[2].data as string ?? '', 2)
 
     deck.division = AllDivisions.filter(function (item) {

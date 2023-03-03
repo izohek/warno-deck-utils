@@ -6,6 +6,7 @@ class Deck {
     public country: string = ''
     public numberCards: number = 0
     public cards: UnitCard[] = []
+    public modded: boolean = false
 
     /**
      * Order all of the cards by type, i.e. logistics, infantry, etc.
