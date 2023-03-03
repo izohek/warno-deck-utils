@@ -62,6 +62,13 @@ function parseDeckString (deckString: string): DeckParserResults {
     parserResult.steps.push(unitIdSize[0])
     position = unitIdSize[1]
 
+    // If xpsize and unitidsize are 0 it will cause an infinite loop 
+    // so we'll bail early instead
+    // TODO: As of Mar 2, 23 modded games trigger this due to an issue parsing sizes
+    if (xpSize[0].length + unitIdSize[0].length < 1) {
+        return parserResult
+    }
+    
     // Loop for each unit
     // Ignores leftovers for now since if parsed it creates an extra
     //    incorrect card which shares some IDs with bradleys and such.
