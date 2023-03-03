@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "lint": "npx eslint src/* tests/*",
+    "pretest": "npm run build",
     "test": "jest"
   },
   "repository": {
