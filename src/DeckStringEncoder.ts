@@ -48,7 +48,12 @@ export function encodeDeck (deck: Deck): string {
     })
 
     // End
-    output += encodeValue(1)
+    // This actually indicates no combat groups, will be improved in the 
+    // combat group update
+    output += encodeLengthLeadingValue(0)
+
+    // Padding - fill with 0s to make a full last byte
+    output.padEnd(output.length % 8, '0');
 
     // return output;
     return btoa(bitStringToText(output))
