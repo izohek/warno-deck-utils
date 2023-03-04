@@ -1,4 +1,4 @@
-import Deck from './Deck'
+import Deck, { Company, Platoon, PlatoonPack } from './Deck'
 import parseDeckString, { DeckFieldUnit, DeckParserResults } from './DeckStringParser'
 import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
 
@@ -51,6 +51,31 @@ export function deckFromParser (results: DeckParserResults): Deck {
             cardFromUnitField(cardResult)
         )
     })
+
+    const numberOfCompanies = results.combatGroups[0].dataBinary.value ?? 0
+    if (numberOfCompanies > 0) {
+        deck.combatGroup = {
+            numberOfCompanies: results.combatGroups[0].dataBinary.value ?? 0,
+            platoonMaxNumber: results.combatGroups[1].length,
+            platoonMaxIndex: results.combatGroups[2].length,
+            platoonMaxPack: results.combatGroups[3].length,
+            companies: results.companies.map ( company => {
+                return {
+                    platoons: company.platoons.map( platoon => {
+                        return {
+                            packs: platoon.packs.map (pack => {
+                                return {
+                                    index: `${pack.id}`,
+                                    count: pack.count,
+                                    descriptor: deck.cards[pack.id].descriptor ?? undefined
+                                } as PlatoonPack
+                            })
+                        } as Platoon
+                    }) 
+                } as Company
+            })
+        }
+    }
 
     return deck
 }

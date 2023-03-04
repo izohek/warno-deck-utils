@@ -6,6 +6,7 @@ class Deck {
     public country: string = ''
     public numberCards: number = 0
     public cards: UnitCard[] = []
+    public combatGroup?: CombatGroup
     public modded: boolean = false
 
     /**
@@ -85,5 +86,26 @@ const UnitCardCategories = {
     air: 'Air'
 }
 
+interface CombatGroup {
+    numberOfCompanies: number
+    platoonMaxNumber: number | null
+    platoonMaxIndex: number | null
+    platoonMaxPack: number | null
+    companies: Company[]
+}
+
+export interface Company {
+    platoons: Platoon[]
+}
+export interface Platoon {
+    packs: PlatoonPack[]
+}
+
+export interface PlatoonPack {
+    index: string,
+    count: number
+    descriptor?: string,
+}
+
 export default Deck
-export { Deck, OrderedUnitCardSet, UnitCardCategories }
+export { Deck, OrderedUnitCardSet, UnitCardCategories, CombatGroup }

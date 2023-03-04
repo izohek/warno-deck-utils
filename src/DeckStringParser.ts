@@ -105,6 +105,7 @@ function parseDeckString (deckString: string): DeckParserResults {
     // == Combat groups ==
 
     // number of encoded companies
+    console.log("Remaining: ", bitstream.slice(position))
     const numCombatGroups = parseField(bitstream, position)
     parserResult.combatGroups.push(numCombatGroups[0])
     position = numCombatGroups[1]
@@ -126,7 +127,7 @@ function parseDeckString (deckString: string): DeckParserResults {
     position = maxPlatoonPackIndex[1]
 
     // 2)c) Biggest number of a pack in a Platoon
-    const maxPlatoonPackId = parseField(bitstream, position)
+    const maxPlatoonPackId = parseFixedWidth(bitstream, position)
     parserResult.combatGroups.push(maxPlatoonPackId[0])
     position = maxPlatoonPackId[1]
     
@@ -137,6 +138,17 @@ function parseDeckString (deckString: string): DeckParserResults {
 
     // TODO:
     // 3) Loop through each Company
+    for (let i = 0; i < numCombatGroupsInt; i++) {
+        parserResult.companies.push(parseCompanyField(
+            bitstream, position, {
+                platoons: maxPlatoonNum[0].length,
+                packIndex: maxPlatoonPackIndex[0].length,
+                packNumber: maxPlatoonPackId[0].length
+            }
+        ))
+
+    }
+    console.log("companies: ", parserResult.companies)
 
     return parserResult
 }
@@ -213,6 +225,94 @@ function parseUnitField (buffer: string, position: number, lengths: {xp: number,
     })
 }
 
+function parseCompanyField (
+    buffer: string,
+    position: number,
+    lengths: {
+        platoons: number,
+        packIndex: number,
+        packNumber: number
+    }
+): DeckFieldCompany {
+    let platoons: DeckFieldPlatoon[] = []
+    let currentPosition = position
+    let nextPosition = currentPosition
+
+    nextPosition += lengths.platoons
+    let numberOfPlatoons = buffer.slice(currentPosition, nextPosition)
+    currentPosition = nextPosition
+    console.log("!!num platoons: ", numberOfPlatoons)
+
+    for (let i = 0; i < lengths.platoons; i++) {
+        const platoonField = parsePlatoonField(
+            buffer, 
+            currentPosition, 
+            lengths
+        )
+
+        platoons.push(platoonField)
+
+        currentPosition = platoonField.position.end
+    }
+
+    return new DeckFieldCompany(
+        platoons, 
+        {start: position, end: currentPosition}
+    )
+}
+
+function parsePlatoonField(
+    buffer: string,
+    position: number,
+    lengths: {
+        packIndex: number,
+        packNumber: number
+    }
+): DeckFieldPlatoon {
+    let currentPosition = position
+    let nextPosition = currentPosition
+
+    nextPosition += lengths.packIndex
+    const packIndex = buffer.slice(currentPosition, nextPosition)
+    currentPosition = nextPosition
+
+    const numberOfPacksInPlatoon = parseInt(packIndex, 2)
+
+    let platoonPacks: DeckFieldPlatoonPack[] = []
+    for (let i = 0; i < numberOfPacksInPlatoon; i++) {
+        const packStartIndex = currentPosition
+        nextPosition = currentPosition + lengths.packIndex
+        const packId = buffer.slice(currentPosition, nextPosition)
+        currentPosition = nextPosition
+
+        nextPosition = nextPosition + lengths.packNumber
+        const numberOfPack = buffer.slice(currentPosition, nextPosition)
+        currentPosition = nextPosition
+
+        platoonPacks.push({
+            id: parseInt(packId, 2),
+            count: parseInt(numberOfPack, 2),
+            position: {
+                start: packStartIndex,
+                end: currentPosition
+            }
+        })
+    }
+
+    // sanity check since # of packs is encoded it should match our parsed results
+    if (numberOfPacksInPlatoon !== platoonPacks.length) {
+        throw new Error("combat group platoon inconsistency error: number of platoon packs does not match parsed number of packs")
+    }
+
+    return new DeckFieldPlatoon(
+        platoonPacks,
+        {
+            start: position,
+            end: nextPosition
+        }
+    )
+}
+
 /**
  * Convert output from atob to a binary string representation.
  *
@@ -238,6 +338,7 @@ class DeckParserResults {
     steps: DeckField[] = []
     units: DeckFieldUnit[] = []
     combatGroups: DeckField[] = []
+    companies: DeckFieldCompany[] = []
     error: Error | null = null
     leftovers: DeckField[] = []
 }
@@ -284,6 +385,26 @@ class DeckFieldUnit {
         this.transport = parseInt(transport, 2)
         this.position = position
     }
+}
+
+class DeckFieldCompany {
+    constructor(
+        public platoons: DeckFieldPlatoon[],
+        public position: ParserPosition
+    ) {}
+}
+
+class DeckFieldPlatoon {
+    constructor(
+        public packs: DeckFieldPlatoonPack[],
+        public position: ParserPosition
+    ){}
+}
+
+interface DeckFieldPlatoonPack {
+    id: number,
+    count: number,
+    position: ParserPosition
 }
 
 export default parseDeckString
