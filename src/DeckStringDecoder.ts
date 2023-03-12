@@ -1,5 +1,6 @@
 import Deck from './Deck'
-import parseDeckString, { DeckFieldUnit, DeckParserResults } from './DeckStringParser'
+import parseDeckString from './DeckStringParser'
+import { DeckFieldUnit, DeckParserResults } from './types/Parser';
 import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
 
 /**
@@ -11,11 +12,6 @@ import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
 export function decodeDeckString (deckString: string): Deck {
     // Parse and decode
     const parserResults = parseDeckString(deckString)
-
-    // Error check
-    if (parserResults.error !== null) {
-        throw parserResults.error
-    }
 
     return deckFromParser(parserResults)
 }
@@ -29,21 +25,20 @@ export function decodeDeckString (deckString: string): Deck {
 export function deckFromParser (results: DeckParserResults): Deck {
     const deck = new Deck()
 
-    if (results.error != null) {
-        return deck
-    }
-
     // Indicates if deck code was generated from a modded game
-    const moddedFlag = parseInt(results.steps[1].data as string ?? '', 2)
+    const moddedFlag = parseInt(results.headers.modded.data as string ?? '', 2)
     deck.modded = moddedFlag === 1
 
-    const divisionValue = parseInt(results.steps[2].data as string ?? '', 2)
+    const divisionValue = parseInt(results.headers.division.data as string ?? '', 2)
+    if (divisionValue === undefined) {
+        throw new Error("Could not parse division id")
+    }
 
     deck.division = AllDivisions.filter(function (item) {
         return item.id === divisionValue
     })[0]
 
-    const numberOfCardsField = results.steps[3]
+    const numberOfCardsField = results.headers.numberOfCards
     deck.numberCards = parseInt(numberOfCardsField.data as string ?? '', 2)
 
     results.units.slice(0, deck.numberCards).forEach(cardResult => {

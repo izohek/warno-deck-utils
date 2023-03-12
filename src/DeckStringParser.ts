@@ -1,5 +1,6 @@
 import BinaryValue from './BinaryValue'
 import { DECK_FIELD_LENGTH_BITS } from './Constants'
+import { DeckParserResults, DeckField, DeckFieldUnit, DeckHeaders } from './types/Parser'
 
 /// * A parser for Warno Deck strings
 
@@ -10,13 +11,9 @@ import { DECK_FIELD_LENGTH_BITS } from './Constants'
  * @returns DeckParserResults
  */
 function parseDeckString (deckString: string): DeckParserResults {
-    const parserResult = new DeckParserResults()
-    parserResult.deckString = deckString
-
     // Check we have data
     if (deckString === '') {
-        parserResult.error = new Error('Empty deck string')
-        return parserResult
+        throw new Error('Empty deck string')
     }
 
     // Decode base64
@@ -24,62 +21,69 @@ function parseDeckString (deckString: string): DeckParserResults {
     try {
         parsedOutput = atob(deckString)
     } catch (err) {
-        parserResult.error = err as Error ?? new Error('Uknown error')
-        return parserResult
+        throw err as Error ?? new Error('Uknown base 64 error')
     }
 
     const bitstream: string = stringForByteBuffer(parsedOutput)
-    parserResult.decodedString = bitstream
-
     let position: number = 0
 
     // Eugen Headers - unknown purpose
     const header1 = parseField(bitstream, position)
-    parserResult.steps.push(header1[0])
     position = header1[1]
 
     // Modded game flag
     const header2 = parseField(bitstream, position)
-    parserResult.steps.push(header2[0])
     position = header2[1]
 
     // Division
     const division = parseField(bitstream, position)
-    parserResult.steps.push(division[0])
     position = division[1]
 
     // Number of cards contained in the deck
     const numCards = parseField(bitstream, position)
-    parserResult.steps.push(numCards[0])
     position = numCards[1]
 
     // Size of the veterancy field for each unit
     const xpSize = parseFixedWidth(bitstream, position)
-    parserResult.steps.push(xpSize[0])
     position = xpSize[1]
 
     // Size of the unit id field for each unit
     const unitIdSize = parseFixedWidth(bitstream, position)
-    parserResult.steps.push(unitIdSize[0])
     position = unitIdSize[1]
+
+    // Parsed header fields (fields before list of units)
+    let deckHeaders: DeckHeaders = {
+        eugen: header1[0],
+        modded: header2[0],
+        division: division[0],
+        numberOfCards: numCards[0],
+        veterancyFieldSize: xpSize[0],
+        unitIdSize: unitIdSize[0]
+    }
 
     // If xpsize and unitidsize are 0 it will cause an infinite loop 
     // so we'll bail early instead
     // TODO: As of Mar 2, 23 modded games trigger this due to an issue parsing sizes
     if (xpSize[0].length + unitIdSize[0].length < 1) {
-        return parserResult
+        return {
+            deckString: deckString,
+            decodedString: bitstream,
+            headers: deckHeaders,
+            units: []
+        }
     }
     
     // Loop for each unit
     // Ignores leftovers for now since if parsed it creates an extra
     //    incorrect card which shares some IDs with bradleys and such.
     const unitDefTotalLength = xpSize[0].length + unitIdSize[0].length
+    let units = []
     while (position < bitstream.length && position + unitDefTotalLength < bitstream.length) {
         const unit = parseUnitField(bitstream, position, {
             xp: xpSize[0].length,
             unit: unitIdSize[0].length
         })
-        parserResult.units.push(unit)
+        units.push(unit)
         position = unit.position.end
     }
 
@@ -90,7 +94,12 @@ function parseDeckString (deckString: string): DeckParserResults {
     // Might be some sort of padding used in the encoding.
     // Seems to end in : 000010 with { ending padding of 0s }
 
-    return parserResult
+    return {
+        deckString: deckString,
+        decodedString: bitstream,
+        headers: deckHeaders,
+        units: units
+    }
 }
 
 /**
@@ -181,61 +190,5 @@ function stringForByteBuffer (buffer: string, padding: number = 8): string {
     return str
 }
 
-/**
- * Results from DeckParser.parse()
- */
-class DeckParserResults {
-    deckString: string = ''
-    decodedString: string = ''
-    steps: DeckField[] = []
-    units: DeckFieldUnit[] = []
-    error: Error | null = null
-    leftovers: DeckField[] = []
-}
-
-interface ParserPosition {start: number, end: number}
-type DeckFieldDataType = number | string | null
-
-/**
- * Represents an encoded piece of data in the deck string.  A deck string is made up
- * of an array of fields that concatenate to build the final string.  A field is defined
- * with the first 5 bits representing the length of the data that follows.
- * [0-5: binary length| 5-length: data]
- */
-class DeckField {
-    length: number
-    data: DeckFieldDataType
-    positions: ParserPosition
-
-    lengthBinary: BinaryValue
-    dataBinary: BinaryValue
-
-    constructor (length: number, data: DeckFieldDataType, positions: ParserPosition) {
-        this.length = length
-        this.data = data
-        this.positions = positions
-
-        this.lengthBinary = new BinaryValue(this.length)
-        this.dataBinary = new BinaryValue(this.data)
-    }
-}
-
-/**
- * Warno Unit Card
- */
-class DeckFieldUnit {
-    xp: number
-    id: number
-    transport: number
-    position: ParserPosition
-
-    constructor (xp: string, id: string, transport: string, position: ParserPosition) {
-        this.xp = parseInt(xp, 2)
-        this.id = parseInt(id, 2)
-        this.transport = parseInt(transport, 2)
-        this.position = position
-    }
-}
-
 export default parseDeckString
-export { parseDeckString, DeckParserResults, DeckField, DeckFieldUnit, BinaryValue }
+export { parseDeckString, BinaryValue }
