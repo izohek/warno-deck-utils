@@ -1,7 +1,6 @@
-import Deck from './Deck'
 import parseDeckString from './DeckStringParser'
-import { DeckFieldUnit, DeckParserResults } from './types/Parser';
-import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
+import { DeckParserResults, LookupService } from './types/Parser'
+import { SimpleDeck } from './types/SimpleDeck'
 
 /**
  * Decode a Warno deckstring into a Deck
@@ -9,11 +8,11 @@ import { UnitCard, findUnitCard, AllDivisions } from '@izohek/warno-db'
  * @param deckString
  * @returns
  */
-export function decodeDeckString (deckString: string): Deck {
+export function decodeDeckString (deckString: string, lookup: LookupService): SimpleDeck {
     // Parse and decode
     const parserResults = parseDeckString(deckString)
 
-    return deckFromParser(parserResults)
+    return deckFromParser(parserResults, lookup)
 }
 
 /**
@@ -22,50 +21,44 @@ export function decodeDeckString (deckString: string): Deck {
  * @param results DeckParser parse() results
  * @returns
  */
-export function deckFromParser (results: DeckParserResults): Deck {
-    const deck = new Deck()
-
+export function deckFromParser (results: DeckParserResults, lookup: LookupService): SimpleDeck {
     // Indicates if deck code was generated from a modded game
     const moddedFlag = parseInt(results.headers.modded.data as string ?? '', 2)
-    deck.modded = moddedFlag === 1
+    const modded = moddedFlag === 1
 
     const divisionValue = parseInt(results.headers.division.data as string ?? '', 2)
     if (divisionValue === undefined) {
-        throw new Error("Could not parse division id")
+        throw new Error('Could not parse division id')
     }
 
-    deck.division = AllDivisions.filter(function (item) {
-        return item.id === divisionValue
-    })[0]
+    const division = {
+        id: divisionValue,
+        descriptor: lookup.divisionForId(divisionValue) ?? undefined
+    }
 
     const numberOfCardsField = results.headers.numberOfCards
-    deck.numberCards = parseInt(numberOfCardsField.data as string ?? '', 2)
+    const numberCards = parseInt(numberOfCardsField.data as string ?? '', 2)
 
-    results.units.slice(0, deck.numberCards).forEach(cardResult => {
-        deck.cards.push(
-            cardFromUnitField(cardResult)
-        )
+    const cards = results.units.slice(0, numberCards).map((cardResult) => {
+        return {
+            veterancy: cardResult.xp,
+            unit: {
+                id: cardResult.id,
+                descriptor: lookup.unitForId(cardResult.id)
+            },
+            transport: cardResult.transport > 0
+                ? {
+                    id: cardResult.transport,
+                    descriptor: lookup.unitForId(cardResult.transport)
+                }
+                : undefined
+        }
     })
 
-    return deck
-}
-
-/**
- * Translate a parser unit field into a Warno unit card
- *
- * @param unitField Parser unit field
- * @returns
- */
-function cardFromUnitField (unitField: DeckFieldUnit): UnitCard {
-    const newCard = findUnitCard(unitField.id) ?? new UnitCard()
-
-    newCard.code = unitField.id
-    newCard.veterancy = unitField.xp
-
-    if (unitField.transport != null && unitField.transport > 0) {
-        const transportCard = findUnitCard(unitField.transport)
-        newCard.transport = transportCard ?? new UnitCard(`transport (${unitField.transport})`, unitField.transport, unitField.xp)
+    return {
+        modded,
+        division,
+        numberCards,
+        cards
     }
-
-    return newCard
 }

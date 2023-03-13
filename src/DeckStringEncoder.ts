@@ -1,5 +1,5 @@
-import Deck from './Deck'
 import { DECK_FIELD_LENGTH_BITS } from './Constants'
+import { SimpleDeck } from './types/SimpleDeck'
 
 /**
  * Build a deck string from a Deck
@@ -7,7 +7,7 @@ import { DECK_FIELD_LENGTH_BITS } from './Constants'
  * @param deck
  * @returns
  */
-export function encodeDeck (deck: Deck): string {
+export function encodeDeck (deck: SimpleDeck): string {
     if (deck.division == null) {
         return ''
     }
@@ -35,7 +35,7 @@ export function encodeDeck (deck: Deck): string {
 
     // unit id length
     const idBinaryLengths = deck.cards.map(function (card) {
-        return card.code.toString(2).length
+        return card.unit.id.toString(2).length
     })
     const idBinaryLengthsMax = Math.max(...idBinaryLengths, 11)
     output += encodeValue(idBinaryLengthsMax.toString(2))
@@ -43,17 +43,17 @@ export function encodeDeck (deck: Deck): string {
     // add units
     deck.cards.forEach(function (card) {
         output += encodeValue(card.veterancy, xpBinaryLength) +
-                  encodeValue(card.code, idBinaryLengthsMax) +
-                  encodeValue(card.transport?.code ?? 0, idBinaryLengthsMax)
+                  encodeValue(card.unit.id, idBinaryLengthsMax) +
+                  encodeValue(card.transport?.id ?? 0, idBinaryLengthsMax)
     })
 
     // End
-    // This actually indicates no combat groups, will be improved in the 
+    // This actually indicates no combat groups, will be improved in the
     // combat group update
     output += encodeLengthLeadingValue(0)
 
     // Padding - fill with 0s to make a full last byte
-    output.padEnd(output.length % 8, '0');
+    output.padEnd(output.length % 8, '0')
 
     // return output;
     return btoa(bitStringToText(output))

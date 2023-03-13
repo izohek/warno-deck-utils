@@ -52,7 +52,7 @@ function parseDeckString (deckString: string): DeckParserResults {
     position = unitIdSize[1]
 
     // Parsed header fields (fields before list of units)
-    let deckHeaders: DeckHeaders = {
+    const deckHeaders: DeckHeaders = {
         eugen: header1[0],
         modded: header2[0],
         division: division[0],
@@ -61,23 +61,23 @@ function parseDeckString (deckString: string): DeckParserResults {
         unitIdSize: unitIdSize[0]
     }
 
-    // If xpsize and unitidsize are 0 it will cause an infinite loop 
+    // If xpsize and unitidsize are 0 it will cause an infinite loop
     // so we'll bail early instead
     // TODO: As of Mar 2, 23 modded games trigger this due to an issue parsing sizes
     if (xpSize[0].length + unitIdSize[0].length < 1) {
         return {
-            deckString: deckString,
+            deckString,
             decodedString: bitstream,
             headers: deckHeaders,
             units: []
         }
     }
-    
+
     // Loop for each unit
     // Ignores leftovers for now since if parsed it creates an extra
     //    incorrect card which shares some IDs with bradleys and such.
     const unitDefTotalLength = xpSize[0].length + unitIdSize[0].length
-    let units = []
+    const units = []
     while (position < bitstream.length && position + unitDefTotalLength < bitstream.length) {
         const unit = parseUnitField(bitstream, position, {
             xp: xpSize[0].length,
@@ -95,10 +95,10 @@ function parseDeckString (deckString: string): DeckParserResults {
     // Seems to end in : 000010 with { ending padding of 0s }
 
     return {
-        deckString: deckString,
+        deckString,
         decodedString: bitstream,
         headers: deckHeaders,
-        units: units
+        units
     }
 }
 

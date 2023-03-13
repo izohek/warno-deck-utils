@@ -1,4 +1,21 @@
-import { Division, UnitCard, findUnitCard } from '@izohek/warno-db'
+import { LookupService } from './types/Parser'
+
+interface Division {
+    name: string
+    country: string
+    alliance: string
+    id: number
+    descriptor: string
+    tags?: string[]
+}
+
+interface UnitCard {
+    id: number
+    veterancy: number
+    transport?: UnitCard
+    category?: string
+    descriptor?: string
+}
 
 /// A Warno deck
 class Deck {
@@ -7,6 +24,10 @@ class Deck {
     public numberCards: number = 0
     public cards: UnitCard[] = []
     public modded: boolean = false
+
+    constructor (
+        private readonly lookupAdapter: LookupService
+    ) { }
 
     /**
      * Order all of the cards by type, i.e. logistics, infantry, etc.
@@ -42,17 +63,34 @@ class Deck {
      * @param id
      * @returns UnitCard or null if id not found
      */
-    public addUnitWithId (id: string | number, veterancy: number, transport: string | number | null = null): UnitCard | null {
-        const unitCard = findUnitCard(id)
+    public addUnitWithId (id: number, veterancy: number, transport: number | null = null): UnitCard | null {
+        const unitCard: UnitCard = {
+            id,
+            veterancy,
+            transport: transport !== null
+                ? {
+                    id: transport,
+                    veterancy
+                }
+                : undefined,
+            descriptor: this.lookupAdapter.unitForId(id)
+        }
 
-        if (unitCard == null) {
+        if (unitCard.descriptor == null) {
             return null
         }
 
         unitCard.veterancy = Math.min(Math.max(veterancy, 0), 3)
 
         if (transport != null) {
-            unitCard.transport = findUnitCard(transport) ?? undefined
+            const foundTransportDescriptor = this.lookupAdapter.unitForId(transport)
+            unitCard.transport = foundTransportDescriptor !== undefined
+                ? {
+                    id: transport,
+                    veterancy,
+                    descriptor: foundTransportDescriptor
+                }
+                : undefined
         }
 
         this.cards.push(unitCard)

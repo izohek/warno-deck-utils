@@ -1,4 +1,4 @@
-import BinaryValue from "../BinaryValue";
+import BinaryValue from '../BinaryValue'
 
 export interface ParserPosition {start: number, end: number}
 
@@ -45,7 +45,6 @@ export class DeckFieldUnit {
     }
 }
 
-
 /**
  * Results from DeckParser.parse()
  */
@@ -57,10 +56,19 @@ export interface DeckParserResults {
 }
 
 export interface DeckHeaders {
-    eugen: DeckField,
-    modded: DeckField,
-    division: DeckField,
-    numberOfCards: DeckField,
-    veterancyFieldSize: DeckField,
+    eugen: DeckField
+    modded: DeckField
+    division: DeckField
+    numberOfCards: DeckField
+    veterancyFieldSize: DeckField
     unitIdSize: DeckField
+}
+
+export interface LookupService {
+    /// Supply the largest deck parsing id found in the unit database
+    largestUnitId: () => number
+    /// Supply the unit descriptor for a given unit deck parsing id
+    unitForId: (id: number) => string | undefined
+    /// Supply the division descriptor for a given division deck parsing id
+    divisionForId: (id: number) => string | undefined
 }
