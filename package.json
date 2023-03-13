@@ -4,6 +4,8 @@
   "description": "Warno Deck Utilities",
   "main": "dist/src/index.js",
   "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
     "build": "npx tsc",
     "lint": "npx eslint src/* tests/*",
     "pretest": "npm run build",
@@ -36,6 +38,7 @@
     "eslint-plugin-n": "^15.2.4",
     "eslint-plugin-promise": "^6.0.0",
     "jest": "^28.1.3",
+    "rimraf": "^4.4.0",
     "ts-jest": "^28.0.8",
     "typescript": "^4.7.4"
   },
