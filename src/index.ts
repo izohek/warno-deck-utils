@@ -1,2 +1,5 @@
 export { decodeDeckString } from './DeckStringDecoder'
 export { encodeDeck } from './DeckStringEncoder'
+export { IdDescriptorPair, SimpleUnitCard, SimpleDeck} from './types/SimpleDeck'
+export { LookupService } from './types/Parser'
+export { GenericLookupAdapter, GenericLookupAdapterObject } from './adapters/GenericLookupAdapter'
