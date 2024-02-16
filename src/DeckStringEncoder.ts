@@ -1,4 +1,4 @@
-import { DECK_FIELD_LENGTH_BITS } from './Constants'
+import { DECK_CODE_VERSION, DECK_FIELD_LENGTH_BITS, DEFAULT_UNIT_ID_MAX_LENGTH } from './Constants'
 import { SimpleDeck } from './types/SimpleDeck'
 
 /**
@@ -7,7 +7,7 @@ import { SimpleDeck } from './types/SimpleDeck'
  * @param deck
  * @returns
  */
-export function encodeDeck (deck: SimpleDeck): string {
+export function encodeDeck (deck: SimpleDeck, unitIdMaxLength: number = DEFAULT_UNIT_ID_MAX_LENGTH): string {
     if (deck.division == null) {
         return ''
     }
@@ -15,7 +15,7 @@ export function encodeDeck (deck: SimpleDeck): string {
     let output = ''
 
     // eugene static header
-    output = encodeLengthLeadingValue(2) +
+    output = encodeLengthLeadingValue(DECK_CODE_VERSION) +
              encodeLengthLeadingValue(0)
 
     // division
@@ -37,7 +37,7 @@ export function encodeDeck (deck: SimpleDeck): string {
     const idBinaryLengths = deck.cards.map(function (card) {
         return card.unit.id.toString(2).length
     })
-    const idBinaryLengthsMax = Math.max(...idBinaryLengths, 11)
+    const idBinaryLengthsMax = Math.max(...idBinaryLengths, unitIdMaxLength)
     output += encodeValue(idBinaryLengthsMax.toString(2))
 
     // add units
