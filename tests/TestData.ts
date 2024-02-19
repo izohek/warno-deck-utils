@@ -1,35 +1,41 @@
 export const decks = [
     {
-        // Old 10-bit unit encoded value: FBFuGJWzQABA
-        deckString: 'FBFuGJeZoAAQ',
+        deckString: 'FhFuGJkM0AAE',
         division: 23,
         units: [410],
-        veterancy: [3]
+        veterancy: [2]
     }, {
-        // Old 10-bit unit encoded value: FBF4OCVRkAFGQASzvolcAAQ=
-        deckString: 'FBF4OCXIyABIyABFnPoiuAAE',
+        deckString: 'FhF4OiZEZAARGQAELOPoBXAAAVwAAQA=',
         division: 28,
-        units: [562, 562, [359, 500], 174],
-        veterancy: [2, 2, 2, 1]
+        units: [562, 562, [359, 500], 174, 174],
+        veterancy: [2, 2, 2, 0, 0]
     }, {
-        // Old 10-bit unit encoded value: FBFiOiVMyAEzIATMgBM8AEzwABA=
-        deckString: 'FBFiOiXGZABGZABGZABGeABGeAAE',
+        deckString: 'FhFiOiZDMgAQzIACMyABDPAAIzwAAQA=',
         division: 17,
         units: [409, 409, 409, 414, 414],
-        veterancy: [2, 2, 2, 2, 2]
+        veterancy: [2, 2, 1, 2, 1]
     }, {
-        // Old 10-bit unit encoded value: FBFmaMSuHAAUVABRUAGNAA4FfeXMz5cjRlzM+V9+NZX41jfjWN+G9n3lefh02NXTY147ACj0AKPQAs2ACj8AOCH4lpfioMAJCgAozACNMALFQAqCABogAGhgAYXABTwAFGwAaSAAIA==
-        deckString: 'FBFmaMS9DgAEioAEioAFGgANAp94uYz4uQ0YuYz4r5+Msp+MsZ+MsZ+Fex94rx+FpqNVpqNdHYAJHoAJHoAJmwAJH4ANBB+ItJ+JQYAIhQAJGYAIaYAJioAJQQAFRAAFQwAFC4AEngAEjYAFSQAAgA==',
+        deckString: 'FhFmaMTIhwABEVAABFQAEjQADIFH3hcwz0g0NGFyH4BXyNYs8fcH2AASIiNQM0AAEWAACegAEj8ACEYAACOwAAj0AAF5H32PB90oMAAFpKJBCgAIRoADFxH3jFAAExYABeoAASlAAExwABKXAASzQAANMAAFyH4C',
         division: 19,
         units: [
-            540, 277, 277, 564, [517, 503], [371, 207], [370, 209], [371, 207], [351, 504], [357, 504], [355, 504], [355, 504],
-            [758, 503], [350, 504], [845, 565], [845, 565], 571, 573, 573, 822, 575, [520, 504], [361, 504], 643,
-            266, 563, 211, 789, 642, 648, 646, 535, 316, 283, 658
+            540, 277, 277, 564, [517, 503], [371, 207],
+            [525, 209], [370, 504], [351, 565], [719, 503],
+            502, [546, 565], 205, 278,
+            634, 575, 280, 571, 573, [377, 503], [1596, 503],
+            643, [361, 649], 266, 282, [369, 503], 788, 790,
+            1960, 660, 796, 663, 717, 211, [370, 504]
         ],
         veterancy: [
-            3, 1, 1, 1, 3, 2, 2, 2, 2, 3, 3, 3,
-            1, 2, 1, 1, 3, 2, 2, 2, 2, 3, 2, 2,
-            2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1
+            2, 1, 0, 1, 3, 2, 1, 2, 0, 2, 0, 1,
+            0, 0, 0, 1, 2, 0, 0, 0, 3, 1, 0, 0,
+            2, 3, 2, 1, 1, 1, 1, 1, 1, 0, 0
+        ]
+    }, {
+        deckString: 'FhI0B0TF9sAALQGPS9Rj4MwYjHtAACA=',
+        division: 208,
+        units: [2011, [720, 399], [757, 399], [204, 392], 493],
+        veterancy: [
+            1, 0, 1, 2, 3
         ]
     }
 ]

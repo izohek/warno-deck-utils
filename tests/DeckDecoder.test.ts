@@ -73,7 +73,7 @@ describe('deck decoder tests', () => {
 
 // test decoding without an adapter
 describe('no adapter tests', () => {
-    decks.forEach( (deck) => {
+    decks.forEach((deck) => {
         test('test-first-deck-code-no-adapter', () => {
             const deckCode = deck.deckString
             const decodedDeck = decodeDeckString(deckCode)
