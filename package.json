@@ -1,6 +1,6 @@
 {
   "name": "@izohek/warno-deck-utils",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Warno Deck Utilities",
   "main": "dist/src/index.js",
   "scripts": {
